@@ -74,3 +74,32 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
+
+
+//
+// import 'package:chat/constants/colors.dart';
+// import 'package:flutter/material.dart';
+// import 'pages/chats_page.dart';
+//
+// // Entry point of the app
+// void main() {
+//   runApp(const MyApp()); // Start the app
+// }
+//
+// // Root widget of the application
+// class MyApp extends StatelessWidget {
+//   const MyApp({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       title: 'Chat App', // App title
+//       debugShowCheckedModeBanner: false, // Remove debug banner
+//       theme: ThemeData(
+//         colorScheme: ColorScheme.fromSeed(seedColor: kOffWhite), // Purple theme
+//         useMaterial3: true, // Use Material 3 design
+//       ),
+//       home: const ChatsPage(), // Start with chats page
+//     );
+//   }
+// }
