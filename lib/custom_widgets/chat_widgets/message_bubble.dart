@@ -16,6 +16,7 @@ class MessageBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final timeFormat = DateFormat('HH:mm');
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Align(
       alignment: isMine ? Alignment.centerRight : Alignment.centerLeft,
@@ -26,7 +27,9 @@ class MessageBubble extends StatelessWidget {
           maxWidth: MediaQuery.of(context).size.width * 0.7,
         ),
         decoration: BoxDecoration(
-          color: isMine ? kZeiti : kApple,
+          color: isMine 
+              ? (isDark ? kZeiti : kZeiti)
+              : (isDark ? Colors.grey[800] : kApple),
           borderRadius: BorderRadius.only(
             topLeft: const Radius.circular(20),
             topRight: const Radius.circular(20),
@@ -47,7 +50,9 @@ class MessageBubble extends StatelessWidget {
             Text(
               message.content,
               style: TextStyle(
-                color: isMine ? Colors.white : kZeiti,
+                color: isMine 
+                    ? Colors.white 
+                    : (isDark ? Colors.white : kZeiti),
                 fontSize: 15,
               ),
             ),
@@ -55,7 +60,9 @@ class MessageBubble extends StatelessWidget {
             Text(
               timeFormat.format(message.createdAt),
               style: TextStyle(
-                color: isMine ? Colors.white.withOpacity(0.7) : Colors.grey[600],
+                color: isMine 
+                    ? Colors.white.withOpacity(0.7) 
+                    : (isDark ? Colors.grey[400] : Colors.grey[600]),
                 fontSize: 11,
               ),
             ),

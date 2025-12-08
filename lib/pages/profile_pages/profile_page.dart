@@ -8,6 +8,7 @@ import 'package:testprofile/services/api.dart';
 import 'package:testprofile/models/user.dart';
 import 'package:testprofile/pages/profile_pages/edit_profile_page.dart';
 import 'package:testprofile/pages/profile_pages/language_selection_page.dart';
+import 'package:testprofile/pages/chat_pages/chat_page.dart';
 
 class ProfilePage extends StatelessWidget {
   final ThemeProvider themeProvider;
@@ -255,6 +256,7 @@ class ProfilePage extends StatelessWidget {
             style: TextStyle(
               color: isDark ? Colors.white : kZeiti,
               fontWeight: FontWeight.bold,
+              fontSize: 20,
             ),
           ),
         ],
@@ -295,7 +297,7 @@ class ProfilePage extends StatelessWidget {
               'PREFERENCES',
               style: TextStyle(
                 fontSize: 14,
-                color: isDark ? Colors.white : kZeiti,
+                color: isDark ? Colors.white : kAfani,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -308,7 +310,7 @@ class ProfilePage extends StatelessWidget {
               'ACCOUNT',
               style: TextStyle(
                 fontSize: 14,
-                color: isDark ? Colors.white : kZeiti,
+                color: isDark ? Colors.white : kAfani,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -317,7 +319,7 @@ class ProfilePage extends StatelessWidget {
             showAccountSettings(context, isDark),
             const SizedBox(height: 32),
             // Logout Container (Standalone with pink color)
-            showLogOutContainer(context),
+            showLogOutContainer(context, isDark),
           ],
         ),
       ),
@@ -351,7 +353,7 @@ class ProfilePage extends StatelessWidget {
                 'Tenant Account',
                 style: TextStyle(
                   fontSize: 16,
-                  color: isDark ? Colors.grey[400] : kKiwi,
+                  color: isDark ? Colors.grey[400] : kAfani,
                 ),
               ),
 
@@ -448,13 +450,13 @@ class ProfilePage extends StatelessWidget {
           // Dark/Light Mode Container
           buildSettingRow(
             context,
-            icon: isDark ? LucideIcons.sun : LucideIcons.moon,
+            icon: isDark ? LucideIcons.sun : LucideIcons.moonStar,
             color: isDark ? Colors.yellow : Colors.purple,
             title: isDark ? 'Light Mode' : 'Dark Mode',
             isDark: isDark,
             isRotated: !isDark,
             trailing: Transform.scale(
-              scale: 0.85,
+              scale: 0.7,
               child: CupertinoSwitch(
                 value: isDark,
                 activeColor: isDark ? Colors.grey[600]! : kZeiti,
@@ -524,6 +526,29 @@ class ProfilePage extends StatelessWidget {
             height: 1,
             color: isDark ? Colors.grey[700] : Colors.grey[300],
           ),
+          buildSettingRow(
+            context,
+            color: Colors.cyan,
+            icon: Icons.message_sharp,
+            title: 'Messages',
+            isDark: isDark,
+            trailing: Icon(
+              Icons.chevron_right,
+              color: isDark ? Colors.grey[400] : kZeiti,
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ChatsPage(),
+                ),
+              );
+            },
+          ),
+          Divider(
+            height: 1,
+            color: isDark ? Colors.grey[700] : Colors.grey[300],
+          ),
           // Security Container
           buildSettingRow(
             context,
@@ -544,10 +569,10 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget showLogOutContainer(BuildContext context){
+  Widget showLogOutContainer(BuildContext context, bool isDark){
     return Container(
       decoration: BoxDecoration(
-        color: Colors.pink.withValues(alpha: 0.1),
+        color: isDark ? Colors.red[900]!.withValues(alpha: 0.3) : kApple,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Material(
@@ -567,7 +592,7 @@ class ProfilePage extends StatelessWidget {
               children: [
                 Icon(
                   Icons.logout,
-                  color: Colors.pink[700],
+                  color: isDark ? Colors.red[300] : kOrange,
                   size: 24,
                 ),
                 const SizedBox(width: 12),
@@ -576,7 +601,7 @@ class ProfilePage extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
-                    color: Colors.pink[700],
+                    color: isDark ? Colors.red[300] : kOrange,
                   ),
                 ),
               ],

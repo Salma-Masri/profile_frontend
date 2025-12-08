@@ -20,32 +20,38 @@ class ChatAvatar extends StatelessWidget {
                     (imageUrl.startsWith('http') || 
                      imageUrl.startsWith('assets/'));
 
-    if (hasImage) {
-      return CircleAvatar(
-        radius: radius,
-        backgroundColor: Colors.grey[300],
-        backgroundImage: imageUrl.startsWith('http')
-            ? NetworkImage(imageUrl) as ImageProvider
-            : AssetImage(imageUrl),
-        onBackgroundImageError: (exception, stackTrace) {
-          // If image fails to load, show fallback letter
-        },
-        child: null,
-      );
-    }
-
-    // Fallback to letter avatar
-    return CircleAvatar(
-      radius: radius,
-      backgroundColor: kZeiti.withOpacity(0.2),
-      child: Text(
-        fallbackLetter,
-        style: TextStyle(
-          fontSize: radius * 0.7,
-          fontWeight: FontWeight.bold,
-          color: kZeiti,
+    return Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: Colors.white,
+          width: 2,
         ),
       ),
+      child: hasImage
+          ? CircleAvatar(
+              radius: radius,
+              backgroundColor: Colors.grey[300],
+              backgroundImage: imageUrl.startsWith('http')
+                  ? NetworkImage(imageUrl) as ImageProvider
+                  : AssetImage(imageUrl),
+              onBackgroundImageError: (exception, stackTrace) {
+                // If image fails to load, show fallback letter
+              },
+              child: null,
+            )
+          : CircleAvatar(
+              radius: radius,
+              backgroundColor: kZeiti.withOpacity(0.2),
+              child: Text(
+                fallbackLetter,
+                style: TextStyle(
+                  fontSize: radius * 0.7,
+                  fontWeight: FontWeight.bold,
+                  color: kZeiti,
+                ),
+              ),
+            ),
     );
   }
 }
