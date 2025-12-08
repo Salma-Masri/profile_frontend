@@ -163,8 +163,10 @@ class ChatsPageState extends State<ChatsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Scaffold(
-      backgroundColor: kOffWhite,
+      backgroundColor: isDark ? Theme.of(context).scaffoldBackgroundColor : kOffWhite,
       appBar: buildAppBar(),
       body: Column(
         children: [
@@ -200,6 +202,8 @@ class ChatsPageState extends State<ChatsPage> {
   }
 
   Widget buildErrorState() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -208,14 +212,14 @@ class ChatsPageState extends State<ChatsPage> {
           const SizedBox(height: 16),
           Text(
             'Failed to load chats',
-            style: TextStyle(fontSize: 18, color: kZeiti),
+            style: TextStyle(fontSize: 18, color: isDark ? Colors.white : kZeiti),
           ),
           const SizedBox(height: 8),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 32),
             child: Text(
               errorMessage ?? 'Unknown error',
-              style: TextStyle(fontSize: 14, color: kZeiti),
+              style: TextStyle(fontSize: 14, color: isDark ? Colors.grey[400] : kZeiti),
               textAlign: TextAlign.center,
             ),
           ),
@@ -223,8 +227,8 @@ class ChatsPageState extends State<ChatsPage> {
           ElevatedButton(
             onPressed: loadChats,
             style: ElevatedButton.styleFrom(
-              backgroundColor: kZeiti,
-              foregroundColor: kOffWhite,
+              backgroundColor: isDark ? Colors.grey[700] : kZeiti,
+              foregroundColor: Colors.white,
             ),
             child: const Text('Retry'),
           ),
@@ -234,15 +238,17 @@ class ChatsPageState extends State<ChatsPage> {
   }
 
   Widget buildEmptyState() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.search_off, size: 64, color: Colors.grey[400]),
+          Icon(Icons.search_off, size: 64, color: isDark ? Colors.grey[600] : Colors.grey[400]),
           const SizedBox(height: 16),
           Text(
             'No chats found',
-            style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+            style: TextStyle(fontSize: 18, color: isDark ? Colors.grey[400] : Colors.grey[600]),
           ),
         ],
       ),
@@ -268,33 +274,34 @@ class ChatsPageState extends State<ChatsPage> {
 
   AppBar buildAppBar() {
     int totalUnread = getTotalUnreadCount();
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return AppBar(
       elevation: 0,
-      backgroundColor: kOffWhite,
+      backgroundColor: isDark ? Theme.of(context).scaffoldBackgroundColor : kOffWhite,
       title: Row(
         children: [
-          const Text(
+          Text(
             'Messages',
             style: TextStyle(
-              color: kZeiti,
-              fontSize: 28,
+              color: isDark ? Colors.white : kZeiti,
+              fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
           ),
           if (totalUnread > 0) ...[
-            const SizedBox(width: 8),
+            const SizedBox(width: 6),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
               decoration: BoxDecoration(
-                color: kZeiti,
-                borderRadius: BorderRadius.circular(12),
+                color: isDark ? kKiwi: kZeiti,
+                borderRadius: BorderRadius.circular(10),
               ),
               child: Text(
                 '$totalUnread',
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 14,
+                  fontSize: 11,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -304,11 +311,11 @@ class ChatsPageState extends State<ChatsPage> {
       ),
       actions: [
         IconButton(
-          icon: const Icon(Icons.refresh, color: kZeiti),
+          icon: Icon(Icons.refresh, color: isDark ? Colors.white : kZeiti),
           onPressed: isLoading ? null : loadChats,
         ),
         IconButton(
-          icon: const Icon(Icons.more_vert, color: kZeiti),
+          icon: Icon(Icons.more_vert, color: isDark ? Colors.white : kZeiti),
           onPressed: () {},
         ),
       ],

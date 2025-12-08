@@ -39,6 +39,7 @@ class EditProfilePageState extends State<EditProfilePage> {
   bool isLoading = false;
   bool _obscureOldPassword = true;
   bool obscureNewPassword = true;
+  bool showPasswordFields = false;
   
   // Error messages for inline validation
   String? _firstNameError;
@@ -89,7 +90,7 @@ class EditProfilePageState extends State<EditProfilePage> {
         textSelectionTheme: TextSelectionThemeData(
           cursorColor: kApple,
           selectionColor: kApple.withValues(alpha: 0.3),
-          selectionHandleColor: kOrange,
+          selectionHandleColor: kKiwi,
         ),
       ),
       child: Scaffold(
@@ -99,10 +100,11 @@ class EditProfilePageState extends State<EditProfilePage> {
             style: TextStyle(
               color: isDark ? Colors.white : kZeiti,
               fontWeight: FontWeight.bold,
+              fontSize: 20,
             ),
           ),
           leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: isDark ? Colors.white : kZeiti),
+            icon: Icon(Icons.arrow_back, color: isDark ? kApple : kZeiti),
             onPressed: () => Navigator.pop(context),
           ),
           bottom: PreferredSize(
@@ -137,7 +139,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                             Text(
                               'Tap to change Photo',
                               style: TextStyle(
-                                color: isDark ? Colors.white : kKiwi,
+                                color: isDark ? Colors.white : kAfani,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -170,7 +172,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                       ),
                       const SizedBox(height: 16),
                       buildTextField(
-                        'Email',
+                        'Email Address',
                         _emailController,
                         isDark,
                         input: TextInputType.emailAddress,
@@ -185,34 +187,6 @@ class EditProfilePageState extends State<EditProfilePage> {
                         errorText: _phoneError,
                       ),
                       const SizedBox(height: 16),
-                      // Password Change Section
-                      buildPasswordField(
-                        'Old Password',
-                        _oldPasswordController,
-                        isDark,
-                        _obscureOldPassword,
-                        () {
-                          setState(() {
-                            _obscureOldPassword = !_obscureOldPassword;
-                          });
-                        },
-                        errorText: _oldPasswordError,
-                      ),
-                      const SizedBox(height: 16),
-
-                      buildPasswordField(
-                        'New Password',
-                        _newPasswordController,
-                        isDark,
-                        obscureNewPassword,
-                        () {
-                          setState(() {
-                            obscureNewPassword = !obscureNewPassword;
-                          });
-                        },
-                        errorText: _newPasswordError,
-                      ),
-                      const SizedBox(height: 16),
 
                       buildTextField(
                         'City',
@@ -220,23 +194,43 @@ class EditProfilePageState extends State<EditProfilePage> {
                         isDark,
                         errorText: _cityError,
                       ),
-                      // const SizedBox(height: 16),
-
-                      // _buildTextField(
-                      //   'Country',
-                      //   _countryController,
-                      //   Icons.public,
-                      //   isDark,
-                      // ),
                       const SizedBox(height: 16),
-                      // ID Image Section
-                      buildImageSection(
-                        context,
-                        'ID Photo',
-                        idImageUrl,
-                        changeIdImage,
-                        isDark,
-                      ),
+
+                      // Change Password Button or Password Fields
+                      if (!showPasswordFields)
+                        buildChangePasswordButton(isDark)
+                      else ...[
+                        buildPasswordField(
+                          'Old Password',
+                          _oldPasswordController,
+                          isDark,
+                          _obscureOldPassword,
+                          () {
+                            setState(() {
+                              _obscureOldPassword = !_obscureOldPassword;
+                            });
+                          },
+                          errorText: _oldPasswordError,
+                        ),
+                        const SizedBox(height: 16),
+                        buildPasswordField(
+                          'New Password',
+                          _newPasswordController,
+                          isDark,
+                          obscureNewPassword,
+                          () {
+                            setState(() {
+                              obscureNewPassword = !obscureNewPassword;
+                            });
+                          },
+                          errorText: _newPasswordError,
+                        ),
+                        const SizedBox(height: 8),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: buildCancelPasswordButton(isDark),
+                        ),
+                      ],
                       const SizedBox(height: 80), // Space for fixed button
                     ],
                   ),
@@ -333,6 +327,75 @@ class EditProfilePageState extends State<EditProfilePage> {
     );
   }
 
+  Widget buildChangePasswordButton(bool isDark) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(color: Colors.grey.withValues(alpha: 0.3)),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            setState(() {
+              showPasswordFields = true;
+            });
+          },
+          borderRadius: BorderRadius.circular(15),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.lock_outline,
+                  color: isDark ? Colors.grey[400] : kZeiti,
+                  size: 22,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'Change Password',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    color: isDark ? Colors.white : kZeiti,
+                  ),
+                ),
+                const Spacer(),
+                Icon(
+                  Icons.chevron_right,
+                  color: isDark ? Colors.grey[400] : kZeiti,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildCancelPasswordButton(bool isDark) {
+    return TextButton(
+      onPressed: () {
+        setState(() {
+          showPasswordFields = false;
+          _oldPasswordController.clear();
+          _newPasswordController.clear();
+          _oldPasswordError = null;
+          _newPasswordError = null;
+        });
+      },
+      child: Text(
+        'Cancel',
+        style: TextStyle(
+          color: isDark ? Colors.grey[400] : kAfani,
+          fontSize: 15,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
+  }
+
   Widget buildTextField(
     String title,
     TextEditingController controller,
@@ -357,7 +420,7 @@ class EditProfilePageState extends State<EditProfilePage> {
         TextField(
           controller: controller,
           keyboardType: input,
-          cursorColor: kOrange,
+          cursorColor: kKiwi,
           style: TextStyle(color: isDark ? Colors.white : kZeiti),
           decoration: InputDecoration(
             filled: true,
@@ -425,7 +488,7 @@ class EditProfilePageState extends State<EditProfilePage> {
         TextField(
           controller: controller,
           obscureText: obscureText,
-          cursorColor: kOrange,
+          cursorColor: kKiwi,
           style: TextStyle(color: isDark ? Colors.white : kZeiti),
           decoration: InputDecoration(
             suffixIcon: IconButton(

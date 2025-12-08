@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../../constants/colors.dart';
 import '../../custom_widgets/chat_widgets/chat_avatar.dart';
 import '../../custom_widgets/chat_widgets/date_divider.dart';
@@ -164,28 +166,45 @@ class ChatDetailPageState extends State<ChatDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: kOffWhite,
-      appBar: buildAppBar(),
-      body: Column(
-        children: [
-          Expanded(child: buildBody()),
-          buildMessageInput(),
-        ],
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    return Theme(
+      data: Theme.of(context).copyWith(
+        textSelectionTheme: TextSelectionThemeData(
+          cursorColor: kZeiti,
+          selectionColor: kZeiti.withValues(alpha: 0.3),
+          selectionHandleColor: kZeiti,
+        ),
+      ),
+      child: Scaffold(
+        backgroundColor: isDark ? Theme.of(context).scaffoldBackgroundColor : kOffWhite,
+        appBar: buildAppBar(),
+        body: Column(
+          children: [
+            Expanded(child: buildBody()),
+            buildMessageInput(isDark),
+          ],
+        ),
       ),
     );
   }
 
   PreferredSizeWidget buildAppBar() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return AppBar(
       elevation: 0,
-      backgroundColor: kOffWhite,
-      bottom: const PreferredSize(
-        preferredSize: Size.fromHeight(1),
-        child: Divider(height: 1, thickness: 1, color: Colors.black12),
+      backgroundColor: isDark ? Theme.of(context).scaffoldBackgroundColor : kOffWhite,
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(1),
+        child: Divider(
+          height: 1,
+          thickness: 1,
+          color: isDark ? Colors.grey[800] : Colors.black12,
+        ),
       ),
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back, color: kZeiti),
+        icon: Icon(Icons.arrow_back, color: isDark ? kApple : kZeiti),
         onPressed: () {
           Navigator.pop(context);
         },
@@ -195,15 +214,15 @@ class ChatDetailPageState extends State<ChatDetailPage> {
           ChatAvatar(
             imageUrl: widget.chat.avatarUrl,
             fallbackLetter: widget.chat.name[0].toUpperCase(),
-            radius: 20,
+            radius: 18,
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
               widget.chat.name,
-              style: const TextStyle(
-                color: kZeiti,
-                fontSize: 16,
+              style: TextStyle(
+                color: isDark ? Colors.white : kZeiti,
+                fontSize: 18,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -211,14 +230,8 @@ class ChatDetailPageState extends State<ChatDetailPage> {
         ],
       ),
       actions: [
-        // if (AppConfig.useMockData)
-        //   IconButton(
-        //     icon: const Icon(Icons.add_comment, color: kZeiti),
-        //     tooltip: 'Simulate receiving message',
-        //     onPressed: _simulateReceiveMessage,
-        //   ),
         IconButton(
-          icon: const Icon(Icons.more_vert, color: kZeiti),
+          icon: Icon(Icons.more_vert, color: isDark ? Colors.white : kZeiti),
           onPressed: () {},
         ),
       ],
@@ -242,6 +255,8 @@ class ChatDetailPageState extends State<ChatDetailPage> {
   }
 
   Widget buildErrorState() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -250,14 +265,14 @@ class ChatDetailPageState extends State<ChatDetailPage> {
           const SizedBox(height: 16),
           Text(
             'Failed to load messages',
-            style: TextStyle(fontSize: 18, color: kZeiti),
+            style: TextStyle(fontSize: 18, color: isDark ? Colors.white : kZeiti),
           ),
           const SizedBox(height: 8),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 32),
             child: Text(
               errorMessage ?? 'Unknown error',
-              style: TextStyle(fontSize: 14, color: kZeiti),
+              style: TextStyle(fontSize: 14, color: isDark ? Colors.grey[400] : kZeiti),
               textAlign: TextAlign.center,
             ),
           ),
@@ -265,8 +280,8 @@ class ChatDetailPageState extends State<ChatDetailPage> {
           ElevatedButton(
             onPressed: loadMessages,
             style: ElevatedButton.styleFrom(
-              backgroundColor: kZeiti,
-              foregroundColor: kOffWhite,
+              backgroundColor: isDark ? Colors.grey[700] : kZeiti,
+              foregroundColor: Colors.white,
             ),
             child: const Text('Retry'),
           ),
@@ -276,17 +291,22 @@ class ChatDetailPageState extends State<ChatDetailPage> {
   }
 
   Widget buildEmptyState() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.chat_bubble_outline, size: 64, color: kKiwi),
+          Icon(Icons.chat_bubble_outline, size: 64, color: isDark ? Colors.grey[600] : kKiwi),
           const SizedBox(height: 16),
-          Text('No messages yet', style: TextStyle(fontSize: 18, color: kKiwi)),
+          Text(
+            'No messages yet', 
+            style: TextStyle(fontSize: 18, color: isDark ? Colors.grey[400] : kKiwi),
+          ),
           const SizedBox(height: 8),
           Text(
             'Start the conversation!',
-            style: TextStyle(fontSize: 14, color: kKiwi),
+            style: TextStyle(fontSize: 14, color: isDark ? Colors.grey[500] : kKiwi),
           ),
         ],
       ),
@@ -360,11 +380,13 @@ class ChatDetailPageState extends State<ChatDetailPage> {
   //   );
   // }
 
-  Widget buildMessageInput() {
+  Widget buildMessageInput(bool isDark) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: kOffWhite,
+        color: isDark ? Theme.of(context).scaffoldBackgroundColor : kOffWhite,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -375,27 +397,31 @@ class ChatDetailPageState extends State<ChatDetailPage> {
       ),
       child: Row(
         children: [
-          Container(
-            child: Transform.rotate(
-              angle: 30 * pi / 180, // -20 degrees
-              child: const Icon(Icons.attach_file, color: kZeiti),
-            ),
+          Transform.rotate(
+            angle: 30 * pi / 180, // -20 degrees
+            child: Icon(Icons.attach_file, color: isDark ? Colors.grey[400] : kZeiti),
           ),
+          const SizedBox(width: 8),
+          Icon(Icons.photo, color: isDark ? Colors.grey[400] : kZeiti),
           const SizedBox(width: 8),
 
           Expanded(
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
-                color: kApple,
+                color: isDark ? Colors.grey[800] : kTiffahiFateh,
                 borderRadius: BorderRadius.circular(18),
+                border: Border.all(color: Colors.grey,width: 0.3 ),
               ),
               child: TextField(
                 controller: _messageController,
                 maxLines: null,
                 textCapitalization: TextCapitalization.sentences,
-                decoration: const InputDecoration(
+                cursorColor: kZeiti,
+                style: TextStyle(color: isDark ? Colors.white : Colors.black),
+                decoration: InputDecoration(
                   hintText: 'Type a message...',
+                  hintStyle: TextStyle(color: isDark ? Colors.grey[500] : Colors.grey),
                   border: InputBorder.none,
                 ),
                 inputFormatters: [
@@ -407,26 +433,27 @@ class ChatDetailPageState extends State<ChatDetailPage> {
 
           const SizedBox(width: 8),
           Container(
-            decoration: const BoxDecoration(
-              color: kApple,
+            decoration: BoxDecoration(
+              color: isDark ? Colors.grey[800] : kTiffahiFateh,
               shape: BoxShape.circle,
+              border: Border.all(width: 0.3, color: Colors.grey),
             ),
             child: isSending
-                ? const Padding(
-              padding: EdgeInsets.all(12.0),
+                ? Padding(
+              padding: const EdgeInsets.all(12.0),
               child: SizedBox(
                 width: 24,
                 height: 24,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  color: kZeiti,
+                  color: Colors.white,
                 ),
               ),
             )
                 : IconButton(
-              icon: Transform.rotate(
-                angle: -30 * pi / 180, // -20 degrees
-                child: const Icon(Icons.send_outlined, color: kZeiti),
+              icon: Icon(
+                Icons.send_outlined,
+                color: isDark?  Colors.grey : kZeiti,
               ),
               onPressed: sendMessage,
             ),
