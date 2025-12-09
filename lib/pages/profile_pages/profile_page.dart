@@ -9,6 +9,7 @@ import 'package:testprofile/models/user.dart';
 import 'package:testprofile/pages/profile_pages/edit_profile_page.dart';
 import 'package:testprofile/pages/profile_pages/language_selection_page.dart';
 import 'package:testprofile/pages/chat_pages/chat_page.dart';
+import 'package:testprofile/pages/owner_page/landlord_dashboard.dart';
 
 class ProfilePage extends StatelessWidget {
   final ThemeProvider themeProvider;
@@ -382,7 +383,17 @@ class ProfilePage extends StatelessWidget {
                 buildCompactButton(
                   text: 'Switch to Landlord',
                   isDark: isDark,
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LandlordDashboard(
+                          user: user,
+                          themeProvider: themeProvider,
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
@@ -519,7 +530,7 @@ class ProfilePage extends StatelessWidget {
               color: isDark ? Colors.grey[400] : kZeiti,
             ),
             onTap: () {
-              // Navigate to my properties
+              // Navigate to payments
             },
           ),
           Divider(
@@ -572,7 +583,7 @@ class ProfilePage extends StatelessWidget {
   Widget showLogOutContainer(BuildContext context, bool isDark){
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? Colors.red[900]!.withValues(alpha: 0.3) : kApple,
+        color: isDark ? Colors.red[900]!.withValues(alpha: 0.3) : kTiffahiFateh,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Material(
