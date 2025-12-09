@@ -8,6 +8,8 @@ import 'package:testprofile/services/api.dart';
 import 'package:testprofile/models/user.dart';
 import 'package:testprofile/pages/profile_pages/edit_profile_page.dart';
 import 'package:testprofile/pages/profile_pages/language_selection_page.dart';
+import 'package:testprofile/pages/chat_pages/chat_page.dart';
+import 'package:testprofile/pages/owner_page/landlord_dashboard.dart';
 
 class ProfilePage extends StatelessWidget {
   final ThemeProvider themeProvider;
@@ -517,7 +519,38 @@ class ProfilePage extends StatelessWidget {
               color: isDark ? Colors.grey[400] : kZeiti,
             ),
             onTap: () {
-              // Navigate to my properties
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => LandlordDashboard(
+                    user: user,
+                    themeProvider: themeProvider,
+                  ),
+                ),
+              );
+            },
+          ),
+          Divider(
+            height: 1,
+            color: isDark ? Colors.grey[700] : Colors.grey[300],
+          ),
+          buildSettingRow(
+            context,
+            color: Colors.cyan,
+            icon: Icons.message_sharp,
+            title: 'Messages',
+            isDark: isDark,
+            trailing: Icon(
+              Icons.chevron_right,
+              color: isDark ? Colors.grey[400] : kZeiti,
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ChatsPage(),
+                ),
+              );
             },
           ),
           Divider(
