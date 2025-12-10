@@ -4,7 +4,7 @@ import '../../constants/colors.dart';
 import '../../custom_widgets/chat_widgets/chat_item.dart';
 import '../../custom_widgets/chat_widgets/search_bar_widget.dart';
 import '../../models/chat.dart';
-import '../../services/chat_service.dart';
+import '../../services/chat_service/chat_service.dart';
 import '../../util/helpers.dart';
 import '../../util/mock/app_config.dart';
 import '../../util/mock/mock_chat_service.dart';

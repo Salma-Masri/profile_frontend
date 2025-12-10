@@ -10,7 +10,7 @@ import '../../custom_widgets/chat_widgets/date_divider.dart';
 import '../../custom_widgets/chat_widgets/message_bubble.dart';
 import '../../models/chat.dart';
 import '../../models/message.dart';
-import '../../services/chat_service.dart';
+import '../../services/chat_service/chat_service.dart';
 import '../../util/helpers.dart';
 import '../../util/mock/app_config.dart';
 import '../../util/mock/mock_chat_service.dart';

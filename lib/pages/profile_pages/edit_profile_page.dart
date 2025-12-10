@@ -4,7 +4,7 @@ import 'package:lucide_icons/lucide_icons.dart';
 import 'package:testprofile/constants/colors.dart';
 import 'package:testprofile/models/user.dart';
 import 'package:testprofile/services/theme_provider.dart';
-import 'package:testprofile/services/api.dart';
+import 'package:testprofile/services/profile_services/edit_profile_service/edit_profile_service.dart';
 import 'package:testprofile/services/image_picker_service.dart';
 import 'package:testprofile/util/validation.dart';
 
@@ -644,12 +644,12 @@ class EditProfilePageState extends State<EditProfilePage> {
 
       // Upload profile image if a new one was selected
       if (profileImageFile != null) {
-        profileImageUrl = await Api.uploadProfileImage(profileImageFile!);
+        profileImageUrl = await EditProfileService.uploadProfileImage(profileImageFile!);
       }
 
       // Upload ID image if a new one was selected
       if (idImageFile != null) {
-        idImageUrl = await Api.uploadIdImage(idImageFile!);
+        idImageUrl = await EditProfileService.uploadIdImage(idImageFile!);
       }
 
       // Determine password to save
@@ -672,7 +672,7 @@ class EditProfilePageState extends State<EditProfilePage> {
       );
 
       // Update user profile on backend
-      final savedUser = await Api.updateUserProfile(updatedUser);
+      final savedUser = await EditProfileService.updateUserProfile(updatedUser);
       widget.onUserUpdated(savedUser);
 
       if (mounted) {
