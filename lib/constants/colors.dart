@@ -8,3 +8,4 @@ const kOrange = Color(0xffe29578);
 const kFistqi = Color(0xffdbf1ef);
 const kTiffahiFateh = Color(0xfff7e8e3);
 const kAfani = Color(0xff559fa2);
+const kAfathGreen = Color(0xffe4eff1);

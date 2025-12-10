@@ -102,9 +102,9 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          _buildSliverAppBar(context),
+          buildSliverAppBar(context),
           SliverToBoxAdapter(
-            child: _buildStatsContainer(context),
+            child: buildStatsContainer(context),
           ),
           SliverToBoxAdapter(
             child: Padding(
@@ -154,12 +154,16 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
               childCount: properties.length,
             ),
           ),
+          SliverToBoxAdapter(
+            child: _buildMarketInsightContainer(context, isDark),
+          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 20)),
         ],
       ),
     );
   }
 
-  Widget _buildSliverAppBar(BuildContext context) {
+  Widget buildSliverAppBar(BuildContext context) {
     final isDark = widget.themeProvider.isDarkMode;
     
     return SliverAppBar(
@@ -439,7 +443,7 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
                     ),
                     color: isDark 
                         ? kApple.withValues(alpha: 0.2)
-                        : kFistqi,
+                        : kAfathGreen,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
@@ -470,7 +474,7 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
     );
   }
 
-  Widget _buildStatsContainer(BuildContext context) {
+  Widget buildStatsContainer(BuildContext context) {
     final isDark = widget.themeProvider.isDarkMode;
     
     return Padding(
@@ -493,7 +497,7 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
           child: Row(
             children: [
               Expanded(
-                child: _buildStatItem(
+                child: buildStatItem(
                   value: '\$2.4k',
                   label: 'Revenue',
                   isDark: isDark,
@@ -505,7 +509,7 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
                 color: isDark ? Colors.grey[700] : Colors.grey[300],
               ),
               Expanded(
-                child: _buildStatItem(
+                child: buildStatItem(
                   value: '12',
                   label: 'Properties',
                   isDark: isDark,
@@ -517,7 +521,7 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
                 color: isDark ? Colors.grey[700] : Colors.grey[300],
               ),
               Expanded(
-                child: _buildStatItem(
+                child: buildStatItem(
                   value: '85%',
                   label: 'Occupancy',
                   isDark: isDark,
@@ -530,7 +534,7 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
     );
   }
 
-  Widget _buildStatItem({
+  Widget buildStatItem({
     required String value,
     required String label,
     required bool isDark,
@@ -561,5 +565,69 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
     );
   }
 
-
+  Widget _buildMarketInsightContainer(BuildContext context, bool isDark) {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: isDark ? Theme.of(context).cardColor : kAfathGreen,
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(
+          color: isDark ? kApple.withValues(alpha: 0.3) : kZeiti,
+          width: 0.2,
+        ),
+        // boxShadow: [
+        //   BoxShadow(
+        //     color: Colors.black.withValues(alpha: 0.1),
+        //     blurRadius: 8,
+        //     offset: const Offset(0, 2),
+        //   ),
+        // ],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: isDark 
+                  ? kApple.withValues(alpha: 0.2)
+                  : kZeiti.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(
+              Icons.trending_up,
+              color: isDark ? kApple : kZeiti,
+              size: 18,
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Market Insight',
+                  style: TextStyle(
+                    color: isDark ? Colors.white : kZeiti,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Rental prices in Damascus have increased by 5% this month. Consider reviewing your rates.',
+                  style: TextStyle(
+                    color: isDark ? Colors.grey[400] : kAfani,
+                    fontSize: 12,
+                    height: 1.4,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
