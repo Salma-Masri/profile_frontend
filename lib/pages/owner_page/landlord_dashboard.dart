@@ -597,7 +597,7 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
             ),
             child: Icon(
               Icons.trending_up,
-              color: isDark ? kApple : kZeiti,
+              color: isDark ? Colors.white : kZeiti,
               size: 18,
             ),
           ),
