@@ -3,6 +3,11 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../../constants/colors.dart';
 import '../../models/user.dart';
 import '../../services/theme_provider.dart';
+import '../../custom_widgets/property_widgets/property_status_badge.dart';
+import '../../custom_widgets/property_widgets/property_rating_badge.dart';
+import '../../custom_widgets/property_widgets/property_booking_badge.dart';
+import '../../custom_widgets/property_widgets/property_filter_bar.dart';
+import 'most_popular_page.dart';
 
 class LandlordDashboard extends StatefulWidget {
   final User user;
@@ -19,6 +24,8 @@ class LandlordDashboard extends StatefulWidget {
 }
 
 class _LandlordDashboardState extends State<LandlordDashboard> {
+  String selectedFilter = 'All';
+  
   // Sample property data
   final List<Map<String, dynamic>> properties = [
     {
@@ -43,7 +50,7 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
       'name': 'Modern Apartment',
       'location': 'Los Angeles, CA',
       'price': 85,
-      'status': 'Active',
+      'status': 'Pending',
       'rating': 4.5,
       'image': 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=300',
       'isFavorite': false,
@@ -61,7 +68,7 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
       'name': 'Luxury Penthouse',
       'location': 'Miami, FL',
       'price': 350,
-      'status': 'Active',
+      'status': 'Blocked',
       'rating': 5.0,
       'image': 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=300',
       'isFavorite': false,
@@ -95,6 +102,48 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
     },
   ];
 
+  List<Map<String, dynamic>> get filteredProperties {
+    if (selectedFilter == 'All') return properties;
+    return properties.where((property) => 
+        property['status'].toString().toLowerCase() == selectedFilter.toLowerCase()).toList();
+  }
+
+  // Sample popular properties data (top performing)
+  final List<Map<String, dynamic>> popularProperties = [
+    {
+      'name': 'Villa',
+      'location': 'Damascus',
+      'price': 250,
+      'rating': 4.9,
+      'image': 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=300',
+      'bookings': 45,
+    },
+    {
+      'name': 'Modern Apartment',
+      'location': 'Aleppo',
+      'price': 180,
+      'rating': 4.8,
+      'image': 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=300',
+      'bookings': 38,
+    },
+    {
+      'name': 'Cozy Studio',
+      'location': 'Lattakia',
+      'price': 120,
+      'rating': 4.7,
+      'image': 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=300',
+      'bookings': 32,
+    },
+    {
+      'name': 'Beach House',
+      'location': 'Tartus',
+      'price': 300,
+      'rating': 5.0,
+      'image': 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=300',
+      'bookings': 28,
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
     final isDark = widget.themeProvider.isDarkMode;
@@ -107,8 +156,11 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
             child: buildStatsContainer(context),
           ),
           SliverToBoxAdapter(
+            child: buildPopularPropertiesSection(context, isDark),
+          ),
+          SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.only(right: 16, left: 16, bottom: 16, top: 30),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -142,20 +194,36 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
               ),
             ),
           ),
-          const SliverToBoxAdapter(child: SizedBox(height: 16)),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: buildPropertyCard(context, index, isDark),
-                );
+          SliverToBoxAdapter(
+            child: PropertyFilterBar(
+              selectedFilter: selectedFilter,
+              onFilterChanged: (filter) {
+                setState(() {
+                  selectedFilter = filter;
+                });
               },
-              childCount: properties.length,
+              isDark: isDark,
+              properties: properties,
             ),
           ),
+          const SliverToBoxAdapter(child: SizedBox(height: 16)),
+          filteredProperties.isEmpty
+              ? SliverToBoxAdapter(
+                  child: buildEmptyMyProperties(context, isDark),
+                )
+              : SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: buildPropertyCard(context, index, isDark),
+                      );
+                    },
+                    childCount: filteredProperties.length,
+                  ),
+                ),
           SliverToBoxAdapter(
-            child: _buildMarketInsightContainer(context, isDark),
+            child: buildMarketInsightContainer(context, isDark),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 20)),
         ],
@@ -167,7 +235,7 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
     final isDark = widget.themeProvider.isDarkMode;
     
     return SliverAppBar(
-      expandedHeight: 180,
+      expandedHeight: 140,
       collapsedHeight: 60,
       floating: false,
       pinned: true,
@@ -230,7 +298,7 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
                   const SizedBox(width: 16),
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.only(bottom: 24),
+                      padding: const EdgeInsets.only(bottom: 10),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -264,7 +332,7 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
   }
 
   Widget buildPropertyCard(BuildContext context, int index, bool isDark) {
-    final property = properties[index];
+    final property = filteredProperties[index];
     
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
@@ -306,36 +374,7 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
                   ),
                 ),
               ),
-              Positioned(
-                top: 14,
-                right: 14,
-                child: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      properties[index]['isFavorite'] = !properties[index]['isFavorite'];
-                    });
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.3),
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.15),
-                          blurRadius: 4,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Icon(
-                      property['isFavorite'] ? Icons.favorite : Icons.favorite_border,
-                      color: property['isFavorite'] ? Colors.red : Colors.white,
-                      size: 18,
-                    ),
-                  ),
-                ),
-              ),
+
             ],
           ),
           // Property Details
@@ -404,67 +443,14 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: property['status'] == 'Active' 
-                          ? const Color(0xff4fbe6f) 
-                          : (isDark ? Colors.grey[600]! : Colors.grey[400]!),
-                      width: 0.2,
-                    ),
-                    color: property['status'] == 'Active' 
-                        ? (isDark 
-                            ? const Color(0xff4fbe6f).withValues(alpha: 0.2)
-                            : const Color(0xffe7fced))
-                        : (isDark 
-                            ? Colors.grey[800]!.withValues(alpha: 0.5)
-                            : Colors.grey.withValues(alpha: 0.3)),
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Text(
-                    property['status'],
-                    style: TextStyle(
-                      color: property['status'] == 'Active' 
-                          ? const Color(0xff4fbe6f) 
-                          : (isDark ? Colors.grey[400] : Colors.grey[700]),
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                PropertyStatusBadge(
+                  status: property['status'],
+                  isDark: isDark,
                 ),
                 const SizedBox(height: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: isDark ? kApple : kZeiti,
-                      width: 0.2,
-                    ),
-                    color: isDark 
-                        ? kApple.withValues(alpha: 0.2)
-                        : kAfathGreen,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.star,
-                        size: 12,
-                        color: isDark ? kOrange : kZeiti,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        property['rating'].toString(),
-                        style: TextStyle(
-                          color: isDark ? kOrange : kZeiti,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
+                PropertyRatingBadge(
+                  rating: property['rating'].toDouble(),
+                  isDark: isDark,
                 ),
               ],
             ),
@@ -510,7 +496,7 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
               ),
               Expanded(
                 child: buildStatItem(
-                  value: '12',
+                  value: '${properties.length}',
                   label: 'Properties',
                   isDark: isDark,
                 ),
@@ -565,7 +551,333 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
     );
   }
 
-  Widget _buildMarketInsightContainer(BuildContext context, bool isDark) {
+  Widget buildPopularPropertiesSection(BuildContext context, bool isDark) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 20),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Most Popular',
+                style: TextStyle(
+                  color: isDark ? Colors.white : kZeiti,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MostPopularPage(
+                        themeProvider: widget.themeProvider,
+                      ),
+                    ),
+                  );
+                },
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'View All',
+                      style: TextStyle(
+                        color: isDark ? Colors.white : kZeiti,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Icon(
+                      Icons.arrow_forward_ios,
+                      color: isDark ? Colors.white : kZeiti,
+                      size: 12,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: popularProperties.isEmpty ? 2 : 12),
+        SizedBox(
+          height:popularProperties.isEmpty? 60 : 300,
+          child: popularProperties.isEmpty 
+              ? buildEmptyPopularProperties(context, isDark)
+              : ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: popularProperties.length + 1, // +1 for the arrow button
+                  itemBuilder: (context, index) {
+                    if (index == popularProperties.length) {
+                      // Show arrow button at the end
+                      return buildViewAllArrowCard(context, isDark);
+                    }
+                    return buildPopularPropertyCard(context, index, isDark);
+                  },
+                ),
+        ),
+        const SizedBox(height: 20),
+      ],
+    );
+  }
+
+  Widget buildPopularPropertyCard(BuildContext context, int index, bool isDark) {
+    final property = popularProperties[index];
+    
+    return Container(
+      width: 180,
+      height: 200, // Fixed height for all cards
+      margin: const EdgeInsets.only(right: 12),
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: isDark ? Theme.of(context).cardColor : Colors.white,
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Floating Property Image
+          ClipRRect(
+            borderRadius: BorderRadius.circular(15),
+            child: Image.network(
+              property['image'],
+              width: double.infinity,
+              height: 130,
+              fit: BoxFit.cover,
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return Container(
+                  width: double.infinity,
+                  height: 130,
+                  color: isDark ? Colors.grey[800] : Colors.grey[200],
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      color: isDark ? kApple : kZeiti,
+                      strokeWidth: 2,
+                    ),
+                  ),
+                );
+              },
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  width: double.infinity,
+                  height: 130,
+                  color: isDark ? Colors.grey[800] : Colors.grey[300],
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.broken_image_outlined,
+                        size: 32,
+                        color: isDark ? Colors.grey[600] : Colors.grey[500],
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Image not available',
+                        style: TextStyle(
+                          color: isDark ? Colors.grey[600] : Colors.grey[500],
+                          fontSize: 10,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+          //),
+          // Property Details with fixed positioning
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                Text(
+                  property['name'],
+                  style: TextStyle(
+                    color: isDark ? Colors.white : kZeiti,
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.location_on_outlined,
+                      size: 12,
+                      color: isDark ? Colors.grey[400] : kAfani,
+                    ),
+                    const SizedBox(width: 2),
+                    Expanded(
+                      child: Text(
+                        property['location'],
+                        style: TextStyle(
+                          color: isDark ? Colors.grey[400] : kAfani,
+                          fontSize: 11,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10), // Fixed spacing before price
+                Row(
+                  children: [
+                    Text(
+                      '\$${property['price']}',
+                      style: TextStyle(
+                        color: isDark ? kApple : kZeiti,
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                    '/night',
+                      style: TextStyle(
+                        color: isDark ? kApple : kAfani,
+                        fontSize: 12,
+                        // fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    PropertyBookingBadge(
+                      bookings: property['bookings'],
+                      isDark: isDark,
+                    ),
+                    PropertyRatingBadge(
+                      rating: property['rating'].toDouble(),
+                      isDark: isDark,
+                    ),
+                  ],
+                ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildEmptyPopularProperties(BuildContext context, bool isDark) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.trending_up_outlined,
+            size: 32,
+            color: isDark ? Colors.grey[600] : Colors.grey[400],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'No popular properties yet',
+            style: TextStyle(
+              color: isDark ? Colors.grey[400] : Colors.grey[600],
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildEmptyMyProperties(BuildContext context, bool isDark) {
+    final isFiltered = selectedFilter != 'All';
+    
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 40),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              isFiltered ? Icons.filter_list_off : Icons.home_outlined,
+              size: 48,
+              color: isDark ? Colors.grey[600] : Colors.grey[400],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              isFiltered ? 'No $selectedFilter properties' : 'No properties yet',
+              style: TextStyle(
+                color: isDark ? Colors.grey[400] : Colors.grey[600],
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              isFiltered 
+                  ? 'Try selecting a different filter'
+                  : 'Add your first property to get started',
+              style: TextStyle(
+                color: isDark ? Colors.grey[500] : Colors.grey[500],
+                fontSize: 12,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildViewAllArrowCard(BuildContext context, bool isDark) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MostPopularPage(
+              themeProvider: widget.themeProvider,
+            ),
+          ),
+        );
+      },
+      child: Container(
+        width: 60,
+        margin: const EdgeInsets.only(right: 12),
+        child: Center(
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: isDark ? kApple.withValues(alpha: 0.2) : kZeiti,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.arrow_forward,
+              color: isDark ? kApple : Colors.white,
+              size: 24,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildMarketInsightContainer(BuildContext context, bool isDark) {
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
       padding: const EdgeInsets.all(16),
