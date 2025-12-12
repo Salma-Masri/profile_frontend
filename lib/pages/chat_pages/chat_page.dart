@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../constants/colors.dart';
 import '../../custom_widgets/chat_widgets/chat_item.dart';
 import '../../custom_widgets/chat_widgets/search_bar_widget.dart';
+import '../../custom_widgets/chat_widgets/chat_filter_bar.dart';
 import '../../models/chat.dart';
 import '../../services/chat_service.dart';
 import '../../util/helpers.dart';
@@ -21,6 +22,7 @@ class ChatsPageState extends State<ChatsPage> {
   List<Chat> allChats = [];
   List<Chat> searchedChats = [];
   final TextEditingController _searchController = TextEditingController();
+  String selectedFilter = 'All';
 
   bool isLoading = false;
   String? errorMessage;
@@ -75,17 +77,35 @@ class ChatsPageState extends State<ChatsPage> {
 
   void searchChats(String query) {
     setState(() {
+      List<Chat> filteredChats = _getFilteredChats();
+      
       if (query.isEmpty) {
-        searchedChats = allChats;
+        searchedChats = filteredChats;
       } else {
         searchedChats = [];
-        for (var chat in allChats) {
+        for (var chat in filteredChats) {
           if (chat.name.toLowerCase().contains(query.toLowerCase())) {
             searchedChats.add(chat);
           }
         }
       }
     });
+  }
+
+  List<Chat> _getFilteredChats() {
+    if (selectedFilter == 'All') {
+      return allChats;
+    } else if (selectedFilter == 'Unread') {
+      return allChats.where((chat) => chat.unreadCount > 0).toList();
+    }
+    return allChats;
+  }
+
+  void onFilterChanged(String filter) {
+    setState(() {
+      selectedFilter = filter;
+    });
+    searchChats(_searchController.text);
   }
 
   void clearSearch() {
@@ -175,6 +195,13 @@ class ChatsPageState extends State<ChatsPage> {
             onChanged: searchChats,
             onClear: clearSearch,
           ),
+          ChatFilterBar(
+            selectedFilter: selectedFilter,
+            onFilterChanged: onFilterChanged,
+            isDark: isDark,
+            chats: allChats,
+          ),
+          const SizedBox(height: 8),
           Expanded(
             child: buildBody(),
           ),

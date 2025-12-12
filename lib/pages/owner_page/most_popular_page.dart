@@ -314,6 +314,8 @@ class _MostPopularPageState extends State<MostPopularPage> {
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
                 ),
+                maxLines: 2, // Allow name to wrap to 2 lines
+                overflow: TextOverflow.ellipsis,
               ),
 
               const SizedBox(height: 4),
@@ -333,6 +335,8 @@ class _MostPopularPageState extends State<MostPopularPage> {
                         color: isDark ? Colors.grey[400] : kAfani,
                         fontSize: 12,
                       ),
+                      maxLines: 2, // Allow location to wrap to 2 lines
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],

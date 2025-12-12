@@ -8,6 +8,7 @@ import '../../custom_widgets/property_widgets/property_rating_badge.dart';
 import '../../custom_widgets/property_widgets/property_booking_badge.dart';
 import '../../custom_widgets/property_widgets/property_filter_bar.dart';
 import 'most_popular_page.dart';
+import 'bookings_page.dart';
 
 class LandlordDashboard extends StatefulWidget {
   final User user;
@@ -335,6 +336,7 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
     final property = filteredProperties[index];
     
     return Container(
+      height: 150, // Fixed height for all property cards
       margin: const EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
         color: isDark ? Theme.of(context).cardColor : Colors.white,
@@ -354,7 +356,7 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
           Stack(
             children: [
               Padding(
-                padding: const EdgeInsets.all(9.0),
+                padding: const EdgeInsets.only(left: 9, right: 9, top: 9, bottom: 9),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(15),
                   child: Image.network(
@@ -379,8 +381,9 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
           ),
           // Property Details
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 3, top: 12),
+            child: Container(
+              height: 130, // Fixed height for the details section
+              padding: const EdgeInsets.only(left: 3, top: 12, right: 12, bottom: 12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -391,6 +394,8 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
                     ),
+                    maxLines: 2, // Allow name to wrap to 2 lines
+                    overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4),
                   Row(
@@ -408,28 +413,30 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
                             color: isDark ? Colors.grey[400] : kAfani,
                             fontSize: 12,
                           ),
+                          maxLines: 2, // Allow location to wrap to 2 lines
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 45),
+                  const Spacer(), // This pushes the price to the bottom
+
                   Row(
-                    children: [
-                      Text(
-                        '\$${property['price']}',
-                        style: TextStyle(
-                          color: isDark ? Colors.white : kZeiti,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
+                      children: [
+                        Text(
+                          '\$${property['price']}',
+                          style: TextStyle(
+                            color: isDark ? Colors.white : kZeiti,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
                       Text(
                         '/night',
                         style: TextStyle(
                           color: isDark ? Colors.grey[400] : kAfani,
                           fontSize: 12,
-                        // fontWeight: FontWeight.bold,
-                      ),
+                        ),
                       ),
                     ],
                   ),
@@ -470,7 +477,7 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
         transform: Matrix4.translationValues(0, -30, 0),
         decoration: BoxDecoration(
           color: isDark ? Theme.of(context).cardColor : Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.1),
@@ -605,7 +612,7 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
         ),
         SizedBox(height: popularProperties.isEmpty ? 2 : 12),
         SizedBox(
-          height:popularProperties.isEmpty? 60 : 300,
+          height:popularProperties.isEmpty? 60 : 260,
           child: popularProperties.isEmpty 
               ? buildEmptyPopularProperties(context, isDark)
               : ListView.builder(
@@ -631,7 +638,7 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
     
     return Container(
       width: 180,
-      height: 200, // Fixed height for all cards
+      // height: 500, // Fixed height for all cards
       margin: const EdgeInsets.only(right: 12),
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
@@ -737,7 +744,8 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 10), // Fixed spacing before price
+                const Spacer(),
+                // const SizedBox(height: 10), // Fixed spacing before price
                 Row(
                   children: [
                     Text(
