@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -204,7 +203,7 @@ class ChatDetailPageState extends State<ChatDetailPage> {
         ),
       ),
       leading: IconButton(
-        icon: Icon(Icons.arrow_back, color: isDark ? kApple : kZeiti),
+        icon: Icon(Icons.arrow_back, color: isDark ? Colors.white : kZeiti),
         onPressed: () {
           Navigator.pop(context);
         },

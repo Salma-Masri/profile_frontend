@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:testprofile/constants/colors.dart';
 import 'package:testprofile/pages/chat_pages/chat_page.dart';
 import 'package:testprofile/pages/profile_pages/profile_page.dart';
+import 'package:testprofile/pages/home_page.dart';
+import 'package:testprofile/pages/owner_page/bookings_page.dart';
 import 'package:testprofile/services/theme_provider.dart';
 import 'package:testprofile/services/language_provider.dart';
 import 'package:testprofile/models/user.dart';
@@ -103,7 +105,10 @@ class _MainShellState extends State<MainShell> {
   @override
   Widget build(BuildContext context) {
     final pages = [
-      const Center(child: Text("Home Page")),
+      HomePage(
+        themeProvider: widget.themeProvider,
+        user: widget.user,
+      ),
       const ChatsPage(),   // ✅ USE YOUR REAL CHATS PAGE
       ProfilePage(         // ✅ USE YOUR REAL PROFILE PAGE
         themeProvider: widget.themeProvider,

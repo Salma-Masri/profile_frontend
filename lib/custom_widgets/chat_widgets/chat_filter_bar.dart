@@ -1,47 +1,35 @@
 import 'package:flutter/material.dart';
 import '../../constants/colors.dart';
+import '../../models/chat.dart';
 
-class PropertyFilterBar extends StatelessWidget {
+class ChatFilterBar extends StatelessWidget {
   final String selectedFilter;
   final Function(String) onFilterChanged;
   final bool isDark;
-  final List<Map<String, dynamic>> properties;
+  final List<Chat> chats;
 
-  const PropertyFilterBar({
+  const ChatFilterBar({
     super.key,
     required this.selectedFilter,
     required this.onFilterChanged,
     required this.isDark,
-    required this.properties,
+    required this.chats,
   });
 
-  int getFilterCount(String filter) {
-    if (filter == 'All') return properties.length;
-    return properties.where((property) => 
-        property['status'].toString().toLowerCase() == filter.toLowerCase()).length;
-  }
-
-  Color _getFilterColor(String filter) {
-    switch (filter.toLowerCase()) {
-      case 'active':
-        return const Color(0xff4fbe6f); // Green
-      case 'inactive':
-        return Colors.grey[600]!; // Grey
-      case 'blocked':
-        return Colors.red; // Red
-      case 'pending':
-        return kOrange; // Orange
-      default:
-        return isDark ? kApple : kZeiti; // Default color for 'All'
+  int _getFilterCount(String filter) {
+    if (filter == 'All') return chats.length;
+    if (filter == 'Unread') {
+      return chats.where((chat) => chat.unreadCount > 0).length;
     }
+    return 0;
   }
 
   @override
   Widget build(BuildContext context) {
-    final filters = ['All', 'Active', 'Inactive', 'Blocked', 'Pending'];
+    final filters = ['All', 'Unread'];
     
     return Container(
-      height: 34,
+      height: 35,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
@@ -49,22 +37,21 @@ class PropertyFilterBar extends StatelessWidget {
         itemBuilder: (context, index) {
           final filter = filters[index];
           final isSelected = selectedFilter == filter;
-          final count = getFilterCount(filter);
-          final filterColor = _getFilterColor(filter);
+          final count = _getFilterCount(filter);
           
           return GestureDetector(
             onTap: () => onFilterChanged(filter),
             child: Container(
-              margin: const EdgeInsets.only(right: 12),
+              margin: const EdgeInsets.only(right: 8),
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
                 color: isSelected 
-                    ? filterColor
-                    : (isDark ? Colors.grey[800] : Colors.grey[100]),
-                borderRadius: BorderRadius.circular(10),
+                    ? (isDark ? kKiwi : kZeiti)
+                    : (isDark ? Colors.grey[800] : Colors.grey[300] ),
+                borderRadius: BorderRadius.circular(20),
                 border: Border.all(
                   color: isSelected 
-                      ? filterColor
+                      ? (isDark ? Colors.grey[700]! : kZeiti)
                       : (isDark ? Colors.grey[700]! : Colors.grey[300]!),
                   width: 1,
                 ),
@@ -78,7 +65,7 @@ class PropertyFilterBar extends StatelessWidget {
                       color: isSelected 
                           ? Colors.white
                           : (isDark ? Colors.white : kZeiti),
-                      fontSize: 12,
+                      fontSize: 11,
                       fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                     ),
                   ),
@@ -87,17 +74,17 @@ class PropertyFilterBar extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
-                        color: isSelected
+                        color: isSelected 
                             ? Colors.white.withValues(alpha: 0.3)
-                            : filterColor.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(10000),
+                            : (isDark ? Colors.white.withValues(alpha: 0.3) : kZeiti.withValues(alpha: 0.2)),
+                        borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(
                         count.toString(),
                         style: TextStyle(
-                          color: isSelected
+                          color: isSelected 
                               ? Colors.white
-                              : filterColor,
+                              : (isDark ? Colors.white.withValues(alpha: 0.3) : kZeiti),
                           fontSize: 11,
                           fontWeight: FontWeight.bold,
                         ),
