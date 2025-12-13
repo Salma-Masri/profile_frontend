@@ -4,7 +4,7 @@ import 'package:lucide_icons/lucide_icons.dart';
 import 'package:testprofile/constants/colors.dart';
 import 'package:testprofile/services/theme_provider.dart';
 import 'package:testprofile/services/language_provider.dart';
-import 'package:testprofile/services/api.dart';
+import 'package:testprofile/services/profile_services/general_services/auth_service.dart';
 import 'package:testprofile/models/user.dart';
 import 'package:testprofile/pages/profile_pages/edit_profile_page.dart';
 import 'package:testprofile/pages/profile_pages/language_selection_page.dart';
@@ -86,7 +86,7 @@ class ProfilePage extends StatelessWidget {
       );
 
       // Call logout API
-      await Api.logout();
+      await AuthService.logout();
 
       // Close loading dialog
       if (context.mounted) {
