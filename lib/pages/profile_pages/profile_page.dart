@@ -10,6 +10,11 @@ import 'package:testprofile/pages/profile_pages/edit_profile_page.dart';
 import 'package:testprofile/pages/profile_pages/language_selection_page.dart';
 import 'package:testprofile/pages/chat_pages/chat_page.dart';
 import 'package:testprofile/pages/owner_page/landlord_dashboard.dart';
+import 'package:testprofile/custom_widgets/common/universal_avatar.dart';
+import 'package:testprofile/custom_widgets/profile_page_widgets/setting_row.dart';
+
+import '../../custom_widgets/profile_page_widgets/profile_button.dart';
+import '../../custom_widgets/profile_page_widgets/settings_container.dart';
 
 class ProfilePage extends StatelessWidget {
   final ThemeProvider themeProvider;
@@ -38,7 +43,6 @@ class ProfilePage extends StatelessWidget {
 
   void showLogoutDialog(BuildContext context) {
     final isDark = themeProvider.isDarkMode;
-
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -77,11 +81,8 @@ class ProfilePage extends StatelessWidget {
       showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (context) => const Center(
-          child: CircularProgressIndicator(
-            color: kZeiti,
-          ),
-        ),
+        builder: (context) =>
+            const Center(child: CircularProgressIndicator(color: kZeiti)),
       );
 
       // Call logout API
@@ -123,131 +124,8 @@ class ProfilePage extends StatelessWidget {
       }
     }
   }
-  Widget showCircleAvatar() {
-    // ========================================
-    // DEFAULT PROFILE IMAGE IMPLEMENTATION
-    // ========================================
-    // This shows a white silhouette on colored background when no profile image exists
-    // Similar to Facebook's default profile picture
-    // To revert: Replace the entire child with: Icon(Icons.person, size: 40, color: Colors.white)
-    
-    return Container(
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: Colors.white, width: 3),
-      ),
-      child: CircleAvatar(
-        radius: 40,
-        backgroundColor: kFistqi,
-        backgroundImage: (user.profileImage != null && user.profileImage!.isNotEmpty)
-            ? NetworkImage(user.profileImage!)
-            : null,
-        child: (user.profileImage == null || user.profileImage!.isEmpty)
-            ? Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: kFistqi
-                  // gradient: LinearGradient(
-                  //   begin: Alignment.topLeft,
-                  //   end: Alignment.bottomRight,
-                  //   colors: [
-                  //     kFistqi,
-                  //     // kKiwi.withValues(alpha: 0.8),
-                  //   ],
-                  // ),
-                ),
-                child: const Icon(
-                  Icons.person,
-                  size: 50,
-                  color: Colors.white,
-                ),
-              )
-            : null,
-      ),
-    );
-  }
 
-  Widget buildSettingRow(
-    BuildContext context, {
-    required IconData icon,
-    required Color color,
-    required String title,
-    required bool isDark,
-    required Widget? trailing,
-    required VoidCallback? onTap,
-    bool isRotated = false,
-  }) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        child: Container(
-          height: 60,
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Row(
-            children: [
-              Container(
-                height: 30,
-                width: 30,
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Transform.rotate(
-                  angle: isRotated ? -0.5 : 0,
-                  child: Icon(icon, color: color, size: 20),
-                ),
-              ),
-              const SizedBox(width: 16),
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: isDark ? Colors.white : kZeiti,
-                ),
-              ),
-              const Spacer(),
-              if (trailing != null) trailing,
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget buildCompactButton({
-    required String text,
-    required VoidCallback onPressed,
-    required bool isDark,
-  }) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: isDark ? Colors.grey[800] : kFistqi,
-        foregroundColor: isDark ? Colors.white : kZeiti,
-
-        minimumSize: const Size(0, 26),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-
-        textStyle: const TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-        ),
-
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-          side: BorderSide(
-            color: isDark ? Colors.grey[600]! : kZeiti,
-            width: 0.5,
-          ),
-        ),
-      ),
-      child: Text(text),
-    );
-  }
-
-  AppBar showAppBar(bool isDark){
+  AppBar showAppBar(bool isDark) {
     return AppBar(
       centerTitle: true,
       title: Row(
@@ -280,20 +158,18 @@ class ProfilePage extends StatelessWidget {
           color: isDark ? Colors.grey[800] : Colors.grey[300],
         ),
       ),
-
     );
   }
 
-  Widget showBody(BuildContext context, bool isDark){
+  Widget showBody(BuildContext context, bool isDark) {
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            showNameAndProfile(context, isDark),
+            _buildProfileHeader(context, isDark),
             const SizedBox(height: 20),
-            // Preferences Section
             Text(
               'PREFERENCES',
               style: TextStyle(
@@ -303,10 +179,8 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-            // Preferences Container (Combined)
-           showPreferencesSettings(context, isDark),
+            buildPreferencesSettings(context, isDark),
             const SizedBox(height: 32),
-            // Account Section
             Text(
               'ACCOUNT',
               style: TextStyle(
@@ -316,26 +190,25 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-            // Account Container (Combined)
-            showAccountSettings(context, isDark),
+            buildAccountSettings(context, isDark),
             const SizedBox(height: 32),
             // Logout Container (Standalone with pink color)
-            showLogOutContainer(context, isDark),
+            buildLogOutContainer(context, isDark),
           ],
         ),
       ),
     );
   }
 
-  Widget showNameAndProfile(BuildContext context, bool isDark){
+  Widget _buildProfileHeader(BuildContext context, bool isDark) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        showCircleAvatar(),
+        UniversalAvatar(user: user, radius: 40),
+        // UniversalAvatar.user(user: user, showBorder: true),
         const SizedBox(width: 15),
-
         Column(
-          crossAxisAlignment: CrossAxisAlignment.start, // ✅ aligns left with "Judy"
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               user.name,
@@ -345,55 +218,28 @@ class ProfilePage extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-
             const SizedBox(height: 1),
-
             if (user.role != null)
               Text(
-                // user.role!,
                 'Tenant Account',
                 style: TextStyle(
                   fontSize: 16,
                   color: isDark ? Colors.grey[400] : kAfani,
                 ),
               ),
-
             const SizedBox(height: 1),
-
-            // ✅ Buttons below "Renter"
             Row(
               children: [
-                buildCompactButton(
+                ProfileButton(
                   text: 'Edit Profile',
                   isDark: isDark,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => EditProfilePage(
-                          user: user,
-                          themeProvider: themeProvider,
-                          onUserUpdated: onUserUpdated,
-                        ),
-                      ),
-                    );
-                  },
+                  onPressed: () => navigateToEditProfile(context),
                 ),
                 const SizedBox(width: 8),
-                buildCompactButton(
+                ProfileButton(
                   text: 'Switch to Landlord',
                   isDark: isDark,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => LandlordDashboard(
-                          user: user,
-                          themeProvider: themeProvider,
-                        ),
-                      ),
-                    );
-                  },
+                  onPressed: () => navigateToLandlordDashboard(context),
                 ),
               ],
             ),
@@ -403,184 +249,112 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget showPreferencesSettings(BuildContext context, bool isDark){
-    return  Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          // Language Container
-          buildSettingRow(
-            context,
-            icon: LucideIcons.languages,
-            color: Colors.blueAccent,
-            title: 'Language',
-            isDark: isDark,
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  languageProvider.currentLanguage,
-                  style: TextStyle(
-                    color: isDark ? Colors.grey[400] : kZeiti,
-                    fontSize: 14,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Icon(
-                  Icons.chevron_right,
+  Widget buildPreferencesSettings(BuildContext context, bool isDark) {
+    return SettingsContainer(
+      children: [
+        SettingRow(
+          icon: LucideIcons.languages,
+          color: Colors.blueAccent,
+          title: 'Language',
+          isDark: isDark,
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                languageProvider.currentLanguage,
+                style: TextStyle(
                   color: isDark ? Colors.grey[400] : kZeiti,
+                  fontSize: 14,
                 ),
-              ],
-            ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => LanguageSelectionPage(
-                    languageProvider: languageProvider,
-                    themeProvider: themeProvider,
-                  ),
-                ),
-              );
-            },
-          ),
-          Divider(
-            height: 1,
-            color: isDark ? Colors.grey[700] : Colors.grey[300],
-          ),
-          // Dark/Light Mode Container
-          buildSettingRow(
-            context,
-            icon: isDark ? LucideIcons.sun : LucideIcons.moonStar,
-            color: isDark ? Colors.yellow : Colors.purple,
-            title: isDark ? 'Light Mode' : 'Dark Mode',
-            isDark: isDark,
-            isRotated: !isDark,
-            trailing: Transform.scale(
-              scale: 0.7,
-              child: CupertinoSwitch(
-                value: isDark,
-                activeColor: isDark ? Colors.grey[600]! : kZeiti,
-                trackColor: isDark ? Colors.grey[800]! : kFistqi,
-                thumbColor: Colors.white,
-                onChanged: (value) {
-                  themeProvider.toggleTheme();
-                },
               ),
-            ),
-            onTap: null,
+              const SizedBox(width: 8),
+              Icon(
+                Icons.chevron_right,
+                color: isDark ? Colors.grey[400] : kZeiti,
+              ),
+            ],
           ),
-        ],
-      ),
+          onTap: () => navigateToLanguageSelection(context),
+        ),
+        SettingRow(
+          icon: isDark ? LucideIcons.sun : LucideIcons.moonStar,
+          color: isDark ? Colors.yellow : Colors.purple,
+          title: isDark ? 'Light Mode' : 'Dark Mode',
+          isDark: isDark,
+          isRotated: !isDark,
+          trailing: Transform.scale(
+            scale: 0.7,
+            child: CupertinoSwitch(
+              value: isDark,
+              activeColor: isDark ? Colors.grey[600]! : kZeiti,
+              trackColor: isDark ? Colors.grey[800]! : kFistqi,
+              thumbColor: Colors.white,
+              onChanged: (value) => themeProvider.toggleTheme(),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
-  Widget showAccountSettings(BuildContext context, bool isDark){
-    return  Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+  Widget buildAccountSettings(BuildContext context, bool isDark) {
+    return SettingsContainer(
+      children: [
+        SettingRow(
+          icon: Icons.notifications,
+          color: kOrange,
+          title: 'Notifications',
+          isDark: isDark,
+          trailing: Icon(
+            Icons.chevron_right,
+            color: isDark ? Colors.grey[400] : kZeiti,
           ),
-        ],
-      ),
-      child: Column(
-        children: [
-          // My Properties Container
-          buildSettingRow(
-            context,
-            color: kOrange,
-            icon: Icons.notifications,
-            title: 'Notifications',
-            isDark: isDark,
-            trailing: Icon(
-              Icons.chevron_right,
-              color: isDark ? Colors.grey[400] : kZeiti,
-            ),
-            onTap: () {
-              // Navigate to my properties
-            },
+          onTap: () {
+            // Navigate to notifications
+          },
+        ),
+        SettingRow(
+          icon: Icons.payment,
+          color: Colors.green,
+          title: 'Payments',
+          isDark: isDark,
+          trailing: Icon(
+            Icons.chevron_right,
+            color: isDark ? Colors.grey[400] : kZeiti,
           ),
-          Divider(
-            height: 1,
-            color: isDark ? Colors.grey[700] : Colors.grey[300],
+          onTap: () {
+            // Navigate to payments
+          },
+        ),
+        SettingRow(
+          icon: Icons.message_sharp,
+          color: Colors.cyan,
+          title: 'Messages',
+          isDark: isDark,
+          trailing: Icon(
+            Icons.chevron_right,
+            color: isDark ? Colors.grey[400] : kZeiti,
           ),
-          buildSettingRow(
-            context,
-            color: Colors.green,
-            icon: Icons.payment,
-            title: 'Payments',
-            isDark: isDark,
-            trailing: Icon(
-              Icons.chevron_right,
-              color: isDark ? Colors.grey[400] : kZeiti,
-            ),
-            onTap: () {
-              // Navigate to payments
-            },
+          onTap: () => navigateToMessages(context),
+        ),
+        SettingRow(
+          icon: Icons.security,
+          color: Colors.indigo,
+          title: 'Security',
+          isDark: isDark,
+          trailing: Icon(
+            Icons.chevron_right,
+            color: isDark ? Colors.grey[400] : kZeiti,
           ),
-          Divider(
-            height: 1,
-            color: isDark ? Colors.grey[700] : Colors.grey[300],
-          ),
-          buildSettingRow(
-            context,
-            color: Colors.cyan,
-            icon: Icons.message_sharp,
-            title: 'Messages',
-            isDark: isDark,
-            trailing: Icon(
-              Icons.chevron_right,
-              color: isDark ? Colors.grey[400] : kZeiti,
-            ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const ChatsPage(),
-                ),
-              );
-            },
-          ),
-          Divider(
-            height: 1,
-            color: isDark ? Colors.grey[700] : Colors.grey[300],
-          ),
-          // Security Container
-          buildSettingRow(
-            context,
-            icon: Icons.security,
-            color: Colors.indigo,
-            title: 'Security',
-            isDark: isDark,
-            trailing: Icon(
-              Icons.chevron_right,
-              color: isDark ? Colors.grey[400] : kZeiti,
-            ),
-            onTap: () {
-              // Navigate to security settings
-            },
-          ),
-        ],
-      ),
+          onTap: () {
+            // Navigate to security settings
+          },
+        ),
+      ],
     );
   }
 
-  Widget showLogOutContainer(BuildContext context, bool isDark){
+  Widget buildLogOutContainer(BuildContext context, bool isDark) {
     return Container(
       decoration: BoxDecoration(
         color: isDark ? Colors.red[900]!.withValues(alpha: 0.3) : kTiffahiFateh,
@@ -589,9 +363,7 @@ class ProfilePage extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () {
-            showLogoutDialog(context);
-          },
+          onTap: () => showLogoutDialog(context),
           borderRadius: BorderRadius.circular(12),
           child: Padding(
             padding: const EdgeInsets.symmetric(
@@ -620,6 +392,49 @@ class ProfilePage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  // Navigation methods
+  void navigateToEditProfile(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditProfilePage(
+          user: user,
+          themeProvider: themeProvider,
+          onUserUpdated: onUserUpdated,
+        ),
+      ),
+    );
+  }
+
+  void navigateToLandlordDashboard(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            LandlordDashboard(user: user, themeProvider: themeProvider),
+      ),
+    );
+  }
+
+  void navigateToLanguageSelection(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LanguageSelectionPage(
+          languageProvider: languageProvider,
+          themeProvider: themeProvider,
+        ),
+      ),
+    );
+  }
+
+  void navigateToMessages(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ChatsPage()),
     );
   }
 }

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-
 import '../../constants/colors.dart';
 import '../../custom_widgets/chat_widgets/chat_item.dart';
 import '../../custom_widgets/chat_widgets/search_bar_widget.dart';
-import '../../custom_widgets/chat_widgets/chat_filter_bar.dart';
+import '../../custom_widgets/common/universal_filter_bar.dart';
 import '../../models/chat.dart';
 import '../../services/chat_service.dart';
 import '../../util/helpers.dart';
@@ -77,7 +76,7 @@ class ChatsPageState extends State<ChatsPage> {
 
   void searchChats(String query) {
     setState(() {
-      List<Chat> filteredChats = _getFilteredChats();
+      List<Chat> filteredChats = getFilteredChats();
       
       if (query.isEmpty) {
         searchedChats = filteredChats;
@@ -92,7 +91,7 @@ class ChatsPageState extends State<ChatsPage> {
     });
   }
 
-  List<Chat> _getFilteredChats() {
+  List<Chat> getFilteredChats() {
     if (selectedFilter == 'All') {
       return allChats;
     } else if (selectedFilter == 'Unread') {
@@ -195,22 +194,26 @@ class ChatsPageState extends State<ChatsPage> {
             onChanged: searchChats,
             onClear: clearSearch,
           ),
-          ChatFilterBar(
+          UniversalFilterBar(
+            filters: const ['All', 'Unread'],
             selectedFilter: selectedFilter,
             onFilterChanged: onFilterChanged,
             isDark: isDark,
-            chats: allChats,
+            filterCounts: {
+              'All': allChats.length,
+              'Unread': allChats.where((chat) => chat.unreadCount > 0).length,
+            },
           ),
           const SizedBox(height: 8),
           Expanded(
-            child: buildBody(),
+            child: showMessages(),
           ),
         ],
       ),
     );
   }
 
-  Widget buildBody() {
+  Widget showMessages() {
     if (isLoading) {
       return const Center(
         child: CircularProgressIndicator(color: kZeiti),
@@ -354,4 +357,7 @@ class ChatsPageState extends State<ChatsPage> {
     _searchController.dispose();
     super.dispose();
   }
+
+
+
 }

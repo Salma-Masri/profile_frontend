@@ -6,7 +6,7 @@ import '../../services/theme_provider.dart';
 import '../../custom_widgets/property_widgets/property_status_badge.dart';
 import '../../custom_widgets/property_widgets/property_rating_badge.dart';
 import '../../custom_widgets/property_widgets/property_booking_badge.dart';
-import '../../custom_widgets/property_widgets/property_filter_bar.dart';
+import '../../custom_widgets/common/universal_filter_bar.dart';
 import 'most_popular_page.dart';
 import 'bookings_page.dart';
 
@@ -196,7 +196,8 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
             ),
           ),
           SliverToBoxAdapter(
-            child: PropertyFilterBar(
+            child: UniversalFilterBar(
+              filters: const ['All', 'Active', 'Inactive', 'Blocked', 'Pending'],
               selectedFilter: selectedFilter,
               onFilterChanged: (filter) {
                 setState(() {
@@ -204,7 +205,13 @@ class _LandlordDashboardState extends State<LandlordDashboard> {
                 });
               },
               isDark: isDark,
-              properties: properties,
+              filterCounts: {
+                'All': properties.length,
+                'Active': properties.where((p) => p['status'].toString().toLowerCase() == 'active').length,
+                'Inactive': properties.where((p) => p['status'].toString().toLowerCase() == 'inactive').length,
+                'Blocked': properties.where((p) => p['status'].toString().toLowerCase() == 'blocked').length,
+                'Pending': properties.where((p) => p['status'].toString().toLowerCase() == 'pending').length,
+              },
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 16)),
