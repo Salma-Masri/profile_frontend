@@ -7,6 +7,7 @@ import 'package:testprofile/services/theme_provider.dart';
 import 'package:testprofile/services/api.dart';
 import 'package:testprofile/services/image_picker_service.dart';
 import 'package:testprofile/util/validation.dart';
+import 'package:testprofile/custom_widgets/common/universal_avatar.dart';
 
 class EditProfilePage extends StatefulWidget {
   final User user;
@@ -40,7 +41,7 @@ class EditProfilePageState extends State<EditProfilePage> {
   bool _obscureOldPassword = true;
   bool obscureNewPassword = true;
   bool showPasswordFields = false;
-  
+
   // Error messages for inline validation
   String? _firstNameError;
   String? _lastNameError;
@@ -104,7 +105,7 @@ class EditProfilePageState extends State<EditProfilePage> {
             ),
           ),
           leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: isDark ? kApple : kZeiti),
+            icon: Icon(Icons.arrow_back, color: isDark ? Colors.white : kZeiti),
             onPressed: () => Navigator.pop(context),
           ),
           bottom: PreferredSize(
@@ -227,8 +228,8 @@ class EditProfilePageState extends State<EditProfilePage> {
                         ),
                         const SizedBox(height: 8),
                         Align(
-                          alignment: Alignment.centerLeft,
-                          child: buildCancelPasswordButton(isDark),
+                          alignment: Alignment.centerRight,
+                          child: CanceButton(isDark),
                         ),
                       ],
                       const SizedBox(height: 80), // Space for fixed button
@@ -374,7 +375,7 @@ class EditProfilePageState extends State<EditProfilePage> {
     );
   }
 
-  Widget buildCancelPasswordButton(bool isDark) {
+  Widget CanceButton(bool isDark) {
     return TextButton(
       onPressed: () {
         setState(() {
@@ -404,7 +405,7 @@ class EditProfilePageState extends State<EditProfilePage> {
     String? errorText,
   }) {
     bool hasError = errorText != null;
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -451,13 +452,7 @@ class EditProfilePageState extends State<EditProfilePage> {
         ),
         if (hasError) ...[
           const SizedBox(height: 4),
-          Text(
-            errorText,
-            style: const TextStyle(
-              color: kOrange,
-              fontSize: 12,
-            ),
-          ),
+          Text(errorText, style: const TextStyle(color: kOrange, fontSize: 12)),
         ],
       ],
     );
@@ -472,7 +467,7 @@ class EditProfilePageState extends State<EditProfilePage> {
     String? errorText,
   }) {
     bool hasError = errorText != null;
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -526,13 +521,7 @@ class EditProfilePageState extends State<EditProfilePage> {
         ),
         if (hasError) ...[
           const SizedBox(height: 4),
-          Text(
-            errorText,
-            style: const TextStyle(
-              color: kOrange,
-              fontSize: 12,
-            ),
-          ),
+          Text(errorText, style: const TextStyle(color: kOrange, fontSize: 12)),
         ],
       ],
     );
@@ -590,7 +579,7 @@ class EditProfilePageState extends State<EditProfilePage> {
     // ========================================
     // VALIDATION - All fields must be valid
     // ========================================
-    
+
     // Clear previous errors
     setState(() {
       _firstNameError = null;
@@ -603,8 +592,14 @@ class EditProfilePageState extends State<EditProfilePage> {
     });
 
     // Validate all fields
-    _firstNameError = Validation.validateName(_firstNameController.text, 'First name');
-    _lastNameError = Validation.validateName(_lastNameController.text, 'Last name');
+    _firstNameError = Validation.validateName(
+      _firstNameController.text,
+      'First name',
+    );
+    _lastNameError = Validation.validateName(
+      _lastNameController.text,
+      'Last name',
+    );
     _emailError = Validation.validateEmail(_emailController.text);
     _phoneError = Validation.validatePhoneNumber(_phoneController.text);
     _cityError = Validation.validateCity(_cityController.text);
@@ -612,7 +607,7 @@ class EditProfilePageState extends State<EditProfilePage> {
       _oldPasswordController.text,
       _newPasswordController.text,
     );
-    
+
     if (_newPasswordController.text.isNotEmpty) {
       _newPasswordError = Validation.validatePassword(
         _newPasswordController.text,
@@ -621,7 +616,8 @@ class EditProfilePageState extends State<EditProfilePage> {
     }
 
     // Check if there are any errors
-    bool hasErrors = _firstNameError != null ||
+    bool hasErrors =
+        _firstNameError != null ||
         _lastNameError != null ||
         _emailError != null ||
         _phoneError != null ||
@@ -713,23 +709,13 @@ class EditProfilePageState extends State<EditProfilePage> {
   }
 
   Widget showCircleAvatar() {
-    return Container(
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: Colors.white, width: 3),
-      ),
-      child: CircleAvatar(
-        radius: 50,
-        backgroundColor: kApple,
-        backgroundImage: profileImageFile != null
-            ? FileImage(profileImageFile!)
-            : (profileImageUrl != null
-                  ? NetworkImage(profileImageUrl!)
-                  : null),
-        child: profileImageFile == null && profileImageUrl == null
-            ? const Icon(Icons.person, size: 60, color: kKiwi)
-            : null,
-      ),
+    return UniversalAvatar(
+      //).profile(
+      imageFile: profileImageFile,
+      imageUrl: profileImageUrl,
+      radius: 50,
+      // showBorder: true,
+      // borderWidth: 3,
     );
   }
 
@@ -754,7 +740,7 @@ class EditProfilePageState extends State<EditProfilePage> {
 
   Widget saveChangesButton() {
     final isDark = widget.themeProvider.isDarkMode;
-    
+
     return SizedBox(
       width: double.infinity,
       height: 50,

@@ -10,17 +10,12 @@ class DateDivider extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final lineColor = Colors.grey[400];
-    
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       child: Row(
         children: [
-          Expanded(
-            child: Container(
-              height: 0.5,
-              color: lineColor,
-            ),
-          ),
+          Expanded(child: Container(height: 0.5, color: lineColor)),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Text(
@@ -32,12 +27,7 @@ class DateDivider extends StatelessWidget {
               ),
             ),
           ),
-          Expanded(
-            child: Container(
-              height: 0.5,
-              color: lineColor,
-            ),
-          ),
+          Expanded(child: Container(height: 0.5, color: lineColor)),
         ],
       ),
     );

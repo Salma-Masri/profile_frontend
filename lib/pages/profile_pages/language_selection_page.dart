@@ -28,10 +28,7 @@ class LanguageSelectionPage extends StatelessWidget {
           ),
         ),
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: isDark ? Colors.white : kZeiti,
-          ),
+          icon: Icon(Icons.arrow_back, color: isDark ? Colors.white : kZeiti),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -89,7 +86,9 @@ class LanguageSelectionPage extends StatelessWidget {
               children: [
                 Icon(
                   LucideIcons.languages,
-                  color: isSelected ? kZeiti : (isDark ? Colors.grey[400] : Colors.grey[600]),
+                  color: isSelected
+                      ? kZeiti
+                      : (isDark ? Colors.grey[400] : Colors.grey[600]),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -98,17 +97,13 @@ class LanguageSelectionPage extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
-                      color: isSelected 
+                      color: isSelected
                           ? kZeiti
                           : (isDark ? Colors.white : kZeiti),
                     ),
                   ),
                 ),
-                if (isSelected)
-                  const Icon(
-                    Icons.check_circle,
-                    color: kZeiti,
-                  ),
+                if (isSelected) const Icon(Icons.check_circle, color: kZeiti),
               ],
             ),
           ),

@@ -17,7 +17,7 @@ class SearchBarWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
@@ -31,7 +31,11 @@ class SearchBarWidget extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(Icons.search, color: isDark ? Colors.grey[400] : Colors.grey, size: 20),
+          Icon(
+            Icons.search,
+            color: isDark ? Colors.grey[400] : Colors.grey,
+            size: 20,
+          ),
           const SizedBox(width: 12),
           Expanded(
             child: TextField(
@@ -40,9 +44,7 @@ class SearchBarWidget extends StatelessWidget {
               style: TextStyle(color: isDark ? Colors.white : Colors.black),
               decoration: InputDecoration(
                 hintText: 'Search chats...',
-                hintStyle: TextStyle(
-                  color: Colors.grey[500],
-                ),
+                hintStyle: TextStyle(color: Colors.grey[500]),
                 border: InputBorder.none,
                 isDense: true,
                 contentPadding: EdgeInsets.zero,
@@ -51,7 +53,11 @@ class SearchBarWidget extends StatelessWidget {
           ),
           if (controller.text.isNotEmpty)
             IconButton(
-              icon: Icon(Icons.clear, color: isDark ? Colors.grey[400] : Colors.grey, size: 20),
+              icon: Icon(
+                Icons.clear,
+                color: isDark ? Colors.grey[400] : Colors.grey,
+                size: 20,
+              ),
               onPressed: onClear,
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(),

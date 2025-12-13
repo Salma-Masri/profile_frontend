@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../constants/colors.dart';
-import '../../custom_widgets/chat_widgets/chat_avatar.dart';
+import '../../custom_widgets/common/universal_avatar.dart';
 import '../../custom_widgets/chat_widgets/date_divider.dart';
 import '../../custom_widgets/chat_widgets/message_bubble.dart';
 import '../../models/chat.dart';
@@ -210,10 +210,10 @@ class ChatDetailPageState extends State<ChatDetailPage> {
       ),
       title: Row(
         children: [
-          ChatAvatar(
+          UniversalAvatar(//).chat(
             imageUrl: widget.chat.avatarUrl,
-            fallbackLetter: widget.chat.name[0].toUpperCase(),
-            radius: 18,
+            fallbackText: widget.chat.name[0].toUpperCase(),
+            radius: 22,
           ),
           const SizedBox(width: 12),
           Expanded(

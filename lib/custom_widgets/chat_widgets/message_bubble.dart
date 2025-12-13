@@ -7,11 +7,7 @@ class MessageBubble extends StatelessWidget {
   final Message message;
   final bool isMine;
 
-  const MessageBubble({
-    super.key,
-    required this.message,
-    required this.isMine,
-  });
+  const MessageBubble({super.key, required this.message, required this.isMine});
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +23,7 @@ class MessageBubble extends StatelessWidget {
           maxWidth: MediaQuery.of(context).size.width * 0.7,
         ),
         decoration: BoxDecoration(
-          color: isMine 
-              ? (isDark ? kZeiti : kZeiti)
-              : (isDark ? Colors.grey[800] : kApple),
+          color: isMine ? kZeiti : (isDark ? Colors.grey[800] : kApple),
           borderRadius: BorderRadius.only(
             topLeft: const Radius.circular(20),
             topRight: const Radius.circular(20),
@@ -41,7 +35,7 @@ class MessageBubble extends StatelessWidget {
               color: Colors.black.withOpacity(0.05),
               blurRadius: 5,
               offset: const Offset(0, 2),
-            )
+            ),
           ],
         ),
         child: Column(
@@ -50,9 +44,7 @@ class MessageBubble extends StatelessWidget {
             Text(
               message.content,
               style: TextStyle(
-                color: isMine 
-                    ? Colors.white 
-                    : (isDark ? Colors.white : kZeiti),
+                color: isMine ? Colors.white : (isDark ? Colors.white : kZeiti),
                 fontSize: 15,
               ),
             ),
@@ -60,8 +52,8 @@ class MessageBubble extends StatelessWidget {
             Text(
               timeFormat.format(message.createdAt),
               style: TextStyle(
-                color: isMine 
-                    ? Colors.white.withOpacity(0.7) 
+                color: isMine
+                    ? Colors.white.withOpacity(0.7)
                     : (isDark ? Colors.grey[400] : Colors.grey[600]),
                 fontSize: 11,
               ),
